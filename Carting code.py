@@ -10,6 +10,9 @@ class Car(arcade.Sprite):
     start = False
     revers = False
     stop = False
+    gear_1 = False
+    gear_2 = False
+    gear_3 = False
 
     def movement(self):
         self.center_x += self.change_x
@@ -24,7 +27,15 @@ class Car(arcade.Sprite):
                 self.change_y -=0.5
             else:
                 self.change_y=0
-
+        if self.gear_1:
+            if self.change_y>10:
+                self.change_y +=0.5
+        if self.gear_3:
+            if self.change_y>20:
+                self.change_y +=0.8
+        if self.gear_3:
+            if self.change_y>30:
+                self.change_y +=1
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):
@@ -53,6 +64,12 @@ class MyGame(arcade.Window):
             self.first_car.revers = True
         if symbol == arcade.key.SPACE:
             self.first_car.stop = True
+        if symbol == arcade.key.X:
+            self.first_car.gear_1= True
+        if symbol == arcade.key.C:
+            self.first_car.gear_2 = True
+        if symbol == arcade.key.V:
+            self.first_car.gear_3 = True
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.A:
@@ -67,6 +84,12 @@ class MyGame(arcade.Window):
             self.first_car.start = False
         if symbol == arcade.key.SPACE:
             self.first_car.stop=False
+        if symbol == arcade.key.Z:
+            self.first_car.gear_1= False
+        if symbol == arcade.key.C:
+            self.first_car.gear_2 = False
+        if symbol == arcade.key.V:
+            self.first_car.gear_3 = False
 
     def on_draw(self):
         self.clear()

@@ -14,6 +14,7 @@ class Car(arcade.Sprite):
     gear_2 = False
     gear_3 = False
 
+
     def movement(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -28,19 +29,21 @@ class Car(arcade.Sprite):
             else:
                 self.change_y=0
         if self.gear_1:
-            if self.change_y>10:
+            if self.change_y>20:
                 self.change_y +=0.5
         if self.gear_3:
-            if self.change_y>20:
+            if self.change_y>40:
                 self.change_y +=0.8
         if self.gear_3:
-            if self.change_y>30:
+            if self.change_y>60:
                 self.change_y +=1
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
         self.background = arcade.load_texture("pixil-frame-0 (6).png")
+
+
         """--------------------Camera---------------"""
         self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
         """------------------Car----------------------"""
@@ -50,6 +53,7 @@ class MyGame(arcade.Window):
         self.first_car.center_y = self.background.height // 2
 
         self.first_car.angle = 0
+
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.D:
@@ -101,7 +105,15 @@ class MyGame(arcade.Window):
             self.background
         )
         self.first_car.draw()
+        speed = (self.first_car.change_x ** 2 + self.first_car.change_y ** 2) ** 0.5
 
+        arcade.draw_text(
+            f"Speed: {int(speed)}",
+            self.camera.position[0] + 20,
+            self.camera.position[1] + SCREEN_HEIGHT - 40,
+            arcade.color.WHITE,
+            24
+        )
     def on_update(self, delta_time):
         self.first_car.movement()
 

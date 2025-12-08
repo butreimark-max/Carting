@@ -13,30 +13,51 @@ class Car(arcade.Sprite):
     gear_1 = False
     gear_2 = False
     gear_3 = False
-
+    neutral = False
 
     def movement(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
-        if self.start :  # todo: разобрать (так не пишем)
+        print(self.change_y)
+
+        if self.start :
             self.change_y += 0.3
+
         if self.revers :
             self.change_y -= 0.1
         if self.stop :
             if self.change_y>0:
-                self.change_y -=0.5
+                self.change_y -=1
             else:
                 self.change_y=0
+
         if self.gear_1:
             if self.change_y>20:
                 self.change_y +=0.5
-        if self.gear_3:
+        if self.gear_2:
             if self.change_y>40:
                 self.change_y +=0.8
         if self.gear_3:
             if self.change_y>60:
                 self.change_y +=1
+
+        if self.change_y >= 160 :
+            self.change_y=160
+        if self.neutral:
+
+            if self.change_y>0:
+                self.change_y -=0.1
+
+            elif self.change_y<0:
+
+                self.change_y +=0.1
+            else:
+                self.change_y=0
+
+        if self.revers == False and self.start == False:
+            self.neutral = True
+
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):
@@ -64,16 +85,24 @@ class MyGame(arcade.Window):
             self.first_car.change_x = -10
         if symbol == arcade.key.W:
             self.first_car.start = True
+            self.first_car.neutral = False
         if symbol == arcade.key.S:
             self.first_car.revers = True
+            self.first_car.neutral = False
         if symbol == arcade.key.SPACE:
             self.first_car.stop = True
         if symbol == arcade.key.X:
             self.first_car.gear_1= True
+            self.first_car.gear_2= False
+            self.first_car.gear_3= False
         if symbol == arcade.key.C:
             self.first_car.gear_2 = True
+            self.first_car.gear_1 = False
+            self.first_car.gear_3 = False
         if symbol == arcade.key.V:
             self.first_car.gear_3 = True
+            self.first_car.gear_1 = False
+            self.first_car.gear_2 = False
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.A:
@@ -82,18 +111,15 @@ class MyGame(arcade.Window):
         if symbol == arcade.key.D:
             self.first_car.angle = 0
             self.first_car.change_x = 0
+
         if symbol == arcade.key.S:
             self.first_car.revers = False
         if symbol == arcade.key.W:
             self.first_car.start = False
+
         if symbol == arcade.key.SPACE:
             self.first_car.stop=False
-        if symbol == arcade.key.Z:
-            self.first_car.gear_1= False
-        if symbol == arcade.key.C:
-            self.first_car.gear_2 = False
-        if symbol == arcade.key.V:
-            self.first_car.gear_3 = False
+
 
     def on_draw(self):
         self.clear()
@@ -105,7 +131,8 @@ class MyGame(arcade.Window):
             self.background
         )
         self.first_car.draw()
-        speed = (self.first_car.change_x ** 2 + self.first_car.change_y ** 2) ** 0.5
+       # speed = (self.first_car.change_x ** 2 + self.first_car.change_y ** 2) ** 0.5
+        speed =  self.first_car.change_y
 
         arcade.draw_text(
             f"Speed: {int(speed)}",
@@ -114,6 +141,22 @@ class MyGame(arcade.Window):
             arcade.color.WHITE,
             24
         )
+        arcade.draw_text(
+            f"1: {self.first_car.gear_1},2: {self.first_car.gear_2},3: {self.first_car.gear_3}",
+            self.camera.position[0] + 200,
+            self.camera.position[1] + SCREEN_HEIGHT - 40,
+            arcade.color.WHITE,
+            24
+        )
+
+        arcade.draw_text(
+            f"W (start): {self.first_car.start}, S (reverse): {self.first_car.revers}, SPACE: {self.first_car.stop}, N (neutral): {self.first_car.neutral}",
+            self.camera.position[0] + 20,
+            self.camera.position[1] + 0,
+            arcade.color.WHITE,
+            24
+        )
+
     def on_update(self, delta_time):
         self.first_car.movement()
 
@@ -131,9 +174,7 @@ arcade.run()
 
 # https://api.arcade.academy/en/2.6.17/examples/index.html
 """
-Найти все спрайты для проекта
-Чекнуть остальные примеры проектов от аркейда
-Обучить машину двигаться по нажатию
-
+- Добавить радио (тут полная импровизация, главное, чтобы можно было переключать треки (станции))
+- Всё остальное по желанию
 
 """
